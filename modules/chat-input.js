@@ -299,9 +299,7 @@
     element.addEventListener('mousedown', startPress);
     element.addEventListener('mouseup', cancelPress);
     element.addEventListener('mouseleave', cancelPress);
-    element.addEventListener('touchstart', startPress, {
-      passive: true
-    });
+    element.addEventListener('touchstart', startPress, { passive: false });
     element.addEventListener('touchend', cancelPress);
     element.addEventListener('touchmove', cancelPress);
   }
