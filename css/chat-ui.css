@@ -15,9 +15,12 @@
            }
 
            .message-bubble {
-    word-break: break-word;
-    white-space: pre-wrap;
-}
+               display: flex;
+               align-items: flex-start;
+               gap: 12px;
+               max-width: 100%;
+               min-width: 0;
+           }
 
            .timestamp {
                font-size: 11px;
@@ -817,3 +820,9 @@
                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
            }
 
+
+
+.message-bubble {
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+}
