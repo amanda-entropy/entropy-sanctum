@@ -127,11 +127,7 @@ self.addEventListener('fetch', event => {
       })
       .then(response => {
         // 更新缓存
-        if (response && response.status === 200) {
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, response.clone());
-          });
-        }
+        if (response && response.status === 200) { const responseToCache = response.clone(); caches.open(CACHE_NAME).then(cache => { cache.put(event.request, responseToCache); }); }
         return response;
       })
       .catch(() => {
@@ -147,11 +143,7 @@ self.addEventListener('fetch', event => {
       caches.match(event.request).then(cachedResponse => {
         const fetchPromise = fetch(event.request).then(response => {
           // 后台更新缓存
-          if (response && response.status === 200) {
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, response.clone());
-            });
-          }
+          if (response && response.status === 200) { const responseToCache = response.clone(); caches.open(CACHE_NAME).then(cache => { cache.put(event.request, responseToCache); }); }
           return response;
         }).catch(() => null);
 
