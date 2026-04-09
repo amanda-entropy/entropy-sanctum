@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="css/features-2.css?v=0.0.36">
   <link rel="stylesheet" href="css/features-3.css?v=0.0.36">
   <link rel="stylesheet" href="css/features-4.css?v=0.0.36">
-  <link rel="stylesheet" href="update-notification.css?v=0.0.36">
+  
   <link rel="stylesheet" href="structured-memory.css?v=0.0.36">
   <link rel="stylesheet" href="vector-memory.css?v=0.0.36">
   <link rel="stylesheet" href="online-app.css?v=0.0.36">
@@ -44,7 +44,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js" defer></script>
-  <script src="update-notification.js?v=0.0.36" defer></script>
+  
   <script src="prompt-manager.js?v=0.0.36" defer></script>
   <script src="online-chat-manager.js?v=0.0.36" defer></script>
   <script src="online-chat-integration.js?v=0.0.36" defer></script>
@@ -132,7 +132,7 @@
   <!-- 情侣空间（从内联 script 拆分） -->
   <script src="couple-space.js?v=0.0.36"></script>
   <script src="helper-assistant.js?v=0.0.36" defer></script>
-  <script src="force-update.js?v=0.0.36" defer></script>
+  
   <script src="modules/floating-ball.js?v=0.0.36" defer></script>
   
   <!-- 保活音频播放器样式（从内联 style 拆分） -->
@@ -2820,7 +2820,7 @@
             <div class="settings-item">
                 <label>检查并更新到最新版本</label>
                 <div class="settings-right">
-                    <button id="check-update-btn" class="settings-mini-btn" onclick="ForceUpdater.checkUpdate()">检查更新</button>
+                    <button id="check-update-btn" class="settings-mini-btn" style="display:none;">检查更新</button>
                 </div>
             </div>
             <div class="settings-item">
@@ -6733,12 +6733,7 @@
       </div>
     </div>
   </div><input type="file" id="import-preset-input" accept=".json" hidden>
-  <div id="update-notice-modal">
-    <div class="update-notice-content">
-      <div class="update-notice-body" id="update-notice-body"> </div>
-      <div class="update-notice-footer"> <button id="update-notice-confirm-btn">我知道了</button> <button id="update-notice-dismiss-btn">不再提示</button> </div>
-    </div>
-  </div>
+  
   <div id="delete-world-books-modal" class="modal">
     <div class="modal-content" style="height: 70%;">
       <div class="modal-header"> <span>选择要删除的世界书</span> <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 5px;"> <input type="checkbox" id="select-all-world-books-for-clear"> 全选 </label> </div>
