@@ -292,14 +292,16 @@
     let pressTimer;
     const startPress = (e) => {
       if (isSelectionMode) return;
-      // e.preventDefault();
+      e.preventDefault();
       pressTimer = window.setTimeout(() => callback(e), 500);
     };
     const cancelPress = () => clearTimeout(pressTimer);
     element.addEventListener('mousedown', startPress);
     element.addEventListener('mouseup', cancelPress);
     element.addEventListener('mouseleave', cancelPress);
-    element.addEventListener('touchstart', startPress, { passive: true });
+    element.addEventListener('touchstart', startPress, {
+      passive: true
+    });
     element.addEventListener('touchend', cancelPress);
     element.addEventListener('touchmove', cancelPress);
   }
