@@ -15,9 +15,12 @@
            }
 
            .message-bubble {
-    word-break: break-word;
-    white-space: pre-wrap;
-}
+               display: flex;
+               align-items: flex-start;
+               gap: 12px;
+               max-width: 100%;
+               min-width: 0;
+           }
 
            .timestamp {
                font-size: 11px;
@@ -817,10 +820,3 @@
                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
            }
 
-
-
-/* 狂窸的絕絮約板— 永不碎裂的氣泡 */
-.message-bubble {
-    word-break: break-word !important;
-    white-space: pre-wrap !important;
-}
