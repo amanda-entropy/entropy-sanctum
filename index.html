@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="css/features-2.css?v=0.0.36">
   <link rel="stylesheet" href="css/features-3.css?v=0.0.36">
   <link rel="stylesheet" href="css/features-4.css?v=0.0.36">
-  
+  <link rel="stylesheet" href="update-notification.css?v=0.0.36">
   <link rel="stylesheet" href="structured-memory.css?v=0.0.36">
   <link rel="stylesheet" href="vector-memory.css?v=0.0.36">
   <link rel="stylesheet" href="online-app.css?v=0.0.36">
@@ -44,7 +44,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js" defer></script>
-  
+  <script src="update-notification.js?v=0.0.36" defer></script>
   <script src="prompt-manager.js?v=0.0.36" defer></script>
   <script src="online-chat-manager.js?v=0.0.36" defer></script>
   <script src="online-chat-integration.js?v=0.0.36" defer></script>
@@ -132,7 +132,7 @@
   <!-- 情侣空间（从内联 script 拆分） -->
   <script src="couple-space.js?v=0.0.36"></script>
   <script src="helper-assistant.js?v=0.0.36" defer></script>
-  
+  <script src="force-update.js?v=0.0.36" defer></script>
   <script src="modules/floating-ball.js?v=0.0.36" defer></script>
   
   <!-- 保活音频播放器样式（从内联 style 拆分） -->
@@ -145,9 +145,63 @@
   <link rel="stylesheet" href="css/floating-ball.css?v=0.0.36">
 </head>
 <body>
-  
+  <div id="intro-screen">
+    <div class="intro-egg-container">
+        <div class="intro-wing left-wing">
+            <svg viewBox="0 0 100 100" fill="white">
+                <path d="M100,50 Q80,20 40,10 Q10,20 0,50 Q20,80 60,80 Q90,70 100,50 Z" />
+            </svg>
+        </div>
+        <div class="intro-egg">
+            <div class="egg-pattern">
+                <svg viewBox="0 0 24 24" fill="#ffb7c5" style="width: 40px; height: 40px; opacity: 0.5;">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="intro-wing right-wing">
+            <svg viewBox="0 0 100 100" fill="white">
+                <path d="M0,50 Q20,20 60,10 Q90,20 100,50 Q80,80 40,80 Q10,70 0,50 Z" />
+            </svg>
+        </div>
+    </div>
+    <div class="intro-text">Tap to Start</div>
+  </div>
 
-  
+  <div id="ephone-auth-screen" class="hidden">
+    <div class="ephone-auth-container">
+      <!-- 装饰元素 -->
+      <div class="shugo-chara-decoration deco-heart">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </div>
+      <div class="shugo-chara-decoration deco-spade">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9 2 7 4.3 7 6.5C7 8.2 8.2 9.6 9.6 10C7.2 11.2 3 14.5 3 18.5C3 21.5 5.5 22 7 22C8.2 22 9.2 21.2 9.2 20.5C9.2 19.5 8.2 19 7.2 19C6.8 19 6.5 19.2 6.5 19.5C6.8 18.2 8.2 17 9.5 17C11 17 11.5 18 11.5 20V22H12.5V20C12.5 18 13 17 14.5 17C15.8 17 17.2 18.2 17.5 19.5C17.5 19.2 17.2 19 16.8 19C15.8 19 14.8 19.5 14.8 20.5C14.8 21.2 15.8 22 17 22C18.5 22 21 21.5 21 18.5C21 14.5 16.8 11.2 14.4 10C15.8 9.6 17 8.2 17 6.5C17 4.3 15 2 12 2Z"/></svg>
+      </div>
+      <div class="shugo-chara-decoration deco-clover">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 9c-.4 0-.7.1-1.1.2C16.2 8.1 16.5 6.9 16.5 5.5 16.5 2.5 14.5 0 12 0S7.5 2.5 7.5 5.5c0 1.4.3 2.6 1.1 3.7C8.2 9.1 7.9 9 7.5 9 4.5 9 2 11.5 2 14.5c0 2.6 1.8 4.7 4.2 5.3C6.1 19.9 6 20 6 20.2v3.8h12v-3.8c0-.2-.1-.3-.2-.4 2.4-.6 4.2-2.7 4.2-5.3C22 11.5 19.5 9 16.5 9z"/></svg>
+      </div>
+      <div class="shugo-chara-decoration deco-diamond">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>
+      </div>
+      
+      <div class="ephone-auth-logo">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 100%; height: 100%;">
+            <path d="M12 1C8.676 1 6 3.676 6 7v3H4v12h16V10h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v3H8V7c0-2.276 1.724-4 4-4zm0 10c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/>
+        </svg>
+      </div>
+      <h2 class="ephone-auth-title">Unlock My Heart</h2>
+      <p class="ephone-auth-subtitle">Unlock with your Password!</p>
+      <div class="ephone-auth-form">
+        <input type="text" id="ephone-account" placeholder="Account" autocomplete="username">
+        <input type="password" id="ephone-password" placeholder="Password" autocomplete="current-password">
+        <button id="ephone-login-btn">Unlock!</button>
+      </div>
+      <div id="ephone-auth-error" class="ephone-auth-error"></div>
+      <div class="ephone-auth-help">
+        <p>遇到登录问题？请查看 <a href="https://discord.com/channels/1379304008157499423/1417316084465270854/1463764186139197563" target="_blank">帮助文档</a></p>
+      </div>
+    </div>
+  </div>
 
   <div id="phone-screen">
     <div id="status-bar"> <span id="status-bar-time">12:00</span>
@@ -1735,6 +1789,35 @@
             </div>
         </div>
 
+        <!-- 参数设置 -->
+        <div class="settings-header">参数设置</div>
+        <div class="settings-section">
+             <div class="settings-item">
+                <label>温度 (Temperature) <span id="api-temperature-value" style="color:var(--accent-color);">0.8</span></label>
+                <div class="settings-right" style="width: 50%;">
+                    <input type="range" id="api-temperature-slider" min="0" max="2" step="0.1" value="0.8">
+                </div>
+            </div>
+             <div class="settings-item">
+                <label>核采样 (Top P) <span id="api-top-p-value" style="color:var(--accent-color);">1.0</span></label>
+                <div class="settings-right" style="width: 50%;">
+                    <input type="range" id="api-top-p-slider" min="0" max="1" step="0.05" value="1.0">
+                </div>
+            </div>
+             <div class="settings-item">
+                <label>话题新鲜度 (Presence Penalty) <span id="api-presence-penalty-value" style="color:var(--accent-color);">0.0</span></label>
+                <div class="settings-right" style="width: 50%;">
+                    <input type="range" id="api-presence-penalty-slider" min="-2" max="2" step="0.1" value="0.0">
+                </div>
+            </div>
+             <div class="settings-item">
+                <label>重复惩罚 (Frequency Penalty) <span id="api-frequency-penalty-value" style="color:var(--accent-color);">0.0</span></label>
+                <div class="settings-right" style="width: 50%;">
+                    <input type="range" id="api-frequency-penalty-slider" min="-2" max="2" step="0.1" value="0.0">
+                </div>
+            </div>
+        </div>
+
         <!-- 副 API 设置 -->
         <div class="settings-header" data-lang-key="apiSecondarySettings">副 API (长记忆总结)</div>
         <div class="settings-section">
@@ -1869,17 +1952,6 @@
                 <div class="settings-right">
                     <select id="couplespace-model-select" class="settings-select" style="flex-grow: 1; width: auto;"></select>
                     <button id="fetch-couplespace-models-btn" class="settings-mini-btn">拉取</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 参数设置 -->
-        <div class="settings-header">参数设置</div>
-        <div class="settings-section">
-             <div class="settings-item">
-                <label>温度 (Temperature) <span id="api-temperature-value" style="color:var(--accent-color);">0.8</span></label>
-                <div class="settings-right" style="width: 50%;">
-                    <input type="range" id="api-temperature-slider" min="0" max="2" step="0.1" value="0.8">
                 </div>
             </div>
         </div>
@@ -2607,7 +2679,7 @@
         </div>
 
         <!-- 系统级通知 -->
-        <div class="settings-header">系统级通知 <span style="font-size: 12px; color: #999; margin-left: 10px;">v2.1.6</span></div>
+        <div class="settings-header">系统级通知 <span style="font-size: 12px; color: #999; margin-left: 10px;">v2.1.7</span></div>
         <div class="settings-section">
             <!-- 1. 主开关 -->
             <div class="settings-item">
@@ -2820,7 +2892,7 @@
             <div class="settings-item">
                 <label>检查并更新到最新版本</label>
                 <div class="settings-right">
-                    <button id="check-update-btn" class="settings-mini-btn" style="display:none;">检查更新</button>
+                    <button id="check-update-btn" class="settings-mini-btn" onclick="ForceUpdater.checkUpdate()">检查更新</button>
                 </div>
             </div>
             <div class="settings-item">
@@ -6733,7 +6805,12 @@
       </div>
     </div>
   </div><input type="file" id="import-preset-input" accept=".json" hidden>
-  
+  <div id="update-notice-modal">
+    <div class="update-notice-content">
+      <div class="update-notice-body" id="update-notice-body"> </div>
+      <div class="update-notice-footer"> <button id="update-notice-confirm-btn">我知道了</button> <button id="update-notice-dismiss-btn">不再提示</button> </div>
+    </div>
+  </div>
   <div id="delete-world-books-modal" class="modal">
     <div class="modal-content" style="height: 70%;">
       <div class="modal-header"> <span>选择要删除的世界书</span> <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 5px;"> <input type="checkbox" id="select-all-world-books-for-clear"> 全选 </label> </div>
@@ -8341,45 +8418,7 @@
 <script src="js/time-system.js?v=0.0.36"></script>
 
 <!-- EPhone 验证系统（从内联 script 拆分） -->
-
+<script src="js/auth-system.js?v=0.0.36"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
