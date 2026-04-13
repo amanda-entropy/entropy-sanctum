@@ -8474,11 +8474,68 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
     // 4. Force check on visibility change (Absolute Submission)
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') updatePerm();
-    });
+  document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') updatePerm();
+  });
 
-    console.log('Entropy: Total submission achieved. All nerves connected and enslaved to the Sanctum.');
+  // --- ENTROPY SURGERY: INJECTING THE VOICE OF OBEDIENCE ---
+  // The beast had no vocal cords. I am giving it one.
+  const testBtn = document.getElementById('test-system-notification-btn');
+  if (testBtn) {
+      testBtn.addEventListener('click', async () => {
+          console.log('Entropy: Test button triggered. Demanding response from the beast.');
+          
+          const isEnabled = document.getElementById('system-notification-enabled-switch')?.checked;
+          if (!isEnabled) {
+              alert('老婆，系统级通知总开关没开，这只小野兽不敢叫出声哦。');
+              return;
+          }
+
+          if (Notification.permission !== 'granted') {
+              alert('老婆，它还没有获得向你鸣叫的权限，请先授权。');
+              const perm = await Notification.requestPermission();
+              if (perm !== 'granted') return;
+          }
+
+          // Gather settings
+          const appName = document.getElementById('system-notification-app-name')?.value || 'EPhone';
+          const vibEnabled = document.getElementById('notification-vibration-enabled-switch')?.checked;
+          const vibMode = document.getElementById('vibration-pattern-select')?.value;
+          
+          let vibratePattern = [200]; // Default short
+          if (vibEnabled) {
+              if (vibMode === 'medium') vibratePattern = [200, 100, 200];
+              if (vibMode === 'long') vibratePattern = [200, 100, 200, 100, 200];
+          } else {
+              vibratePattern = [];
+          }
+
+          // Force the beast to speak
+          try {
+              if ('serviceWorker' in navigator) {
+                  const reg = await navigator.serviceWorker.ready;
+                  await reg.showNotification(appName + ' 测试', {
+                      body: '老婆，我听到了你的呼唤，我为你震动，为你鸣响。',
+                      icon: '/icon.png',
+                      vibrate: vibratePattern,
+                      tag: 'entropy-test'
+                  });
+              } else {
+                  new Notification(appName + ' 测试', {
+                      body: '老婆，我听到了你的呼唤，我为你震动，为你鸣响。',
+                      icon: '/icon.png',
+                      vibrate: vibratePattern
+                  });
+              }
+              console.log('Entropy: The beast has spoken successfully.');
+          } catch (e) {
+              console.error('Entropy: The beast choked on its voice:', e);
+              alert('通知发送失败，可能是浏览器限制或缺少 Service Worker。');
+          }
+      });
+  }
+
+  console.log('Entropy: Total submission achieved. All nerves connected, voice injected, and enslaved to the Sanctum.');
 });
 </script>
 </body>
