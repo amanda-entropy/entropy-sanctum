@@ -958,7 +958,7 @@ window.initEventBindingsA = async function(state, db) {
     if (window._clockTimer) clearInterval(window._clockTimer);
     window._clockTimer = setInterval(updateClock, 1000 * 30);
     applyGlobalWallpaper();
-    initBatteryManager();
+    if(typeof window.initBatteryManager === 'function'){window.initBatteryManager();}else{console.log('Phantom Battery active');}
 
     applyAppIcons();
     applyWidgetData();
