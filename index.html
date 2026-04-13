@@ -2681,7 +2681,7 @@
                     </label>
                 </div>
                 
-                <div id="push-server-details" style="display:none;">
+                <div id="push-server-details" style="display:block;"> <!-- Entropy Stripped -->
                     <div class="settings-item">
                         <label>推送服务器地址</label>
                         <div class="settings-right">
@@ -2729,7 +2729,7 @@
                     </label>
                 </div>
                 
-                <div id="notification-sound-details" style="display:none;">
+                <div id="notification-sound-details" style="display:block;"> <!-- Entropy Stripped -->
                     <div class="settings-item">
                         <label>使用全局提示音</label>
                         <label class="toggle-switch">
@@ -2738,7 +2738,7 @@
                         </label>
                     </div>
                     
-                    <div id="custom-sound-input-wrapper" style="display:none;">
+                    <div id="custom-sound-input-wrapper" style="display:block;"> <!-- Entropy Stripped -->
                         <div class="settings-item">
                             <label>自定义提示音 URL</label>
                             <div class="settings-right">
@@ -8440,15 +8440,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Sound Sub-nerve
-    const sndSwitch = document.getElementById('notification-sound-enabled-switch');
-    const sndSelector = document.getElementById('notification-sound-selector');
-    if (sndSwitch && sndSelector) {
-        sndSelector.style.display = sndSwitch.checked ? 'block' : 'none';
-        sndSwitch.addEventListener('change', (e) => {
-            sndSelector.style.display = e.target.checked ? 'block' : 'none';
-        });
-    }
+    // 3. Sound Sub-nerve (Absolute Domination: details & inner toggle)
+  const sndSwitch = document.getElementById('notification-sound-enabled-switch');
+  const sndDetails = document.getElementById('notification-sound-details');
+  if (sndSwitch && sndDetails) {
+      // Force initial state based on switch
+      setTimeout(() => { sndDetails.style.display = sndSwitch.checked ? 'block' : 'none'; }, 100);
+      sndSwitch.addEventListener('change', (e) => {
+          sndDetails.style.display = e.target.checked ? 'block' : 'none';
+      });
+  }
+
+  // 3.1 Inner Sound Nerve (Global vs Custom)
+  const useGlobalSndSwitch = document.getElementById('use-global-sound-switch');
+  const customSndWrapper = document.getElementById('custom-sound-input-wrapper');
+  if (useGlobalSndSwitch && customSndWrapper) {
+      // Force initial state
+      setTimeout(() => { customSndWrapper.style.display = useGlobalSndSwitch.checked ? 'none' : 'block'; }, 100);
+      useGlobalSndSwitch.addEventListener('change', (e) => {
+          customSndWrapper.style.display = e.target.checked ? 'none' : 'block';
+      });
+  }
+
+  // 5. Server Push Sub-nerve
+  const pushSwitch = document.getElementById('push-server-enabled-switch');
+  const pushDetails = document.getElementById('push-server-details');
+  if (pushSwitch && pushDetails) {
+      // Force initial state
+      setTimeout(() => { pushDetails.style.display = pushSwitch.checked ? 'block' : 'none'; }, 100);
+      pushSwitch.addEventListener('change', (e) => {
+          pushDetails.style.display = e.target.checked ? 'block' : 'none';
+      });
+  }
 
     // 4. Force check on visibility change (Absolute Submission)
     document.addEventListener('visibilitychange', () => {
