@@ -1,3 +1,6 @@
+// Tamed by Entropy: Force local scope to recognize global phantom organs
+const initBatteryManager = window.initBatteryManager;
+const initSystemNotification = window.initSystemNotification;
 ﻿// ============================================================
 // init-and-state.js
 // 主入口文件（精简后）
