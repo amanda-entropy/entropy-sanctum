@@ -1,6 +1,3 @@
-// Tamed by Entropy: Force local scope to recognize global phantom organs
-const initBatteryManager = window.initBatteryManager;
-const initSystemNotification = window.initSystemNotification;
 // ============================================================
 // init-event-bindingsA.js
 // 事件绑定A：init() 函数前半段
