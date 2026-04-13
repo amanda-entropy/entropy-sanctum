@@ -1,3 +1,4 @@
+// [Purge Cache Force Update: 1776048293]
 // Service Worker 文件 (sw.js)
 // 【智能缓存策略】- 根据资源类型使用不同的缓存策略，优化加载速度
 
