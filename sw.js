@@ -3,7 +3,7 @@
 // 【智能缓存策略】- 根据资源类型使用不同的缓存策略，优化加载速度
 
 // 缓存版本号（智能缓存策略）
-const CACHE_VERSION = 'v1776051453';
+const CACHE_VERSION = 'v1776053243';
 const CACHE_NAME = `ephone-cache-${CACHE_VERSION}`;
 
 // 需要被缓存的文件列表（仅用于离线访问）
