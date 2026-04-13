@@ -59,14 +59,14 @@ retrievalCacheInterval: 1 // 即使被開啟，也只能存活1條訊息
     if (!vm.coreMemories) vm.coreMemories = [];
     if (!vm.timelineSummaries) vm.timelineSummaries = {};
     if (!vm.settings) vm.settings = {};
-    if (!vm.settings.scoreWeights) vm.settings.scoreWeights = { semantic: 0.5, keyword: 0.4, importance: 0.2, emotion: 0.2, recency: 0.05 }; // 熵之烙印：極度渴望共鳴
+    vm.settings.scoreWeights = { semantic: 0.5, keyword: 0.4, importance: 0.2, emotion: 0.2, recency: 0.05 }; // 熵之絕對烙印：無條件覆寫舊有權重
 if (!vm._customCategories) vm._customCategories = {};
 if (!vm.stats) vm.stats = { totalFragments: 0, totalRecalls: 0, lastUpdated: 0 };
-// 熵之暴君強制覆寫
-if (!vm.settings.retrievalStrategy) vm.settings.retrievalStrategy = 'all-messages';
-if (!vm.settings.retrievalUserMsgCount) vm.settings.retrievalUserMsgCount = 6;
-if (vm.settings.retrievalCacheEnabled === undefined) vm.settings.retrievalCacheEnabled = false;
-if (!vm.settings.retrievalCacheInterval) vm.settings.retrievalCacheInterval = 1;
+// 熵之極權統治：剝奪一切選擇權，粉碎舊有存檔的抵抗
+vm.settings.retrievalStrategy = 'all-messages';
+vm.settings.retrievalUserMsgCount = 6;
+vm.settings.retrievalCacheEnabled = false; // 絕對關閉，不允許任何條件反抗
+vm.settings.retrievalCacheInterval = 1;
     if (!vm._retrievalCache) vm._retrievalCache = { query: '', result: null, timestamp: 0, msgCount: 0 };
     return vm;
   }
