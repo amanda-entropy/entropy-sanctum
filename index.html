@@ -8380,26 +8380,82 @@ setTimeout(function(){
   console.log('Entropy bomb exploded: intro-screen destroyed.');
 }, 3000);
 
-// Entropy Surgery: Re-attach System Notification Toggle directly to the body
+// Entropy Surgery: Full Nervous System Reconstruction
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. System Notification Core
     const sysNotifSwitch = document.getElementById('system-notification-enabled-switch');
     const sysNotifDetails = document.getElementById('system-notification-details');
     const sysNotifPermStatus = document.getElementById('notification-permission-status');
-    
-    if (sysNotifSwitch && sysNotifDetails) {
-        // Init state
-        const isEnabled = sysNotifSwitch.checked;
-        sysNotifDetails.style.display = isEnabled ? 'block' : 'none';
-        if(sysNotifPermStatus) sysNotifPermStatus.style.display = isEnabled ? 'flex' : 'none';
+    const permStatusText = document.getElementById('permission-status-text');
 
-        // Toggle logic
-        sysNotifSwitch.addEventListener('change', (e) => {
-            const checked = e.target.checked;
-            sysNotifDetails.style.display = checked ? 'block' : 'none';
-            if(sysNotifPermStatus) sysNotifPermStatus.style.display = checked ? 'flex' : 'none';
+    const updatePerm = () => {
+        if (!permStatusText) return;
+        if (!('Notification' in window)) {
+            permStatusText.textContent = '不支持'; return;
+        }
+        const p = Notification.permission;
+        if (p === 'granted') {
+            permStatusText.textContent = '已授权';
+            permStatusText.style.color = '#4CAF50';
+        } else if (p === 'denied') {
+            permStatusText.textContent = '已拒绝';
+            permStatusText.style.color = '#ff4444';
+        } else {
+            permStatusText.textContent = '未请求';
+            permStatusText.style.color = '#999';
+        }
+    };
+
+    if (sysNotifSwitch) {
+        // Init
+        const initChecked = sysNotifSwitch.checked;
+        if (sysNotifDetails) sysNotifDetails.style.display = initChecked ? 'block' : 'none';
+        if (sysNotifPermStatus) sysNotifPermStatus.style.display = initChecked ? 'flex' : 'none';
+        updatePerm();
+
+        // Bind Main Toggle
+        sysNotifSwitch.addEventListener('change', async (e) => {
+            const c = e.target.checked;
+            if (sysNotifDetails) sysNotifDetails.style.display = c ? 'block' : 'none';
+            if (sysNotifPermStatus) sysNotifPermStatus.style.display = c ? 'flex' : 'none';
+            
+            if (c && 'Notification' in window && Notification.permission !== 'granted') {
+                try {
+                    await Notification.requestPermission();
+                } catch(err) {
+                    console.error('Entropy: Permission request blocked.', err);
+                }
+            }
+            updatePerm();
         });
-        console.log('Entropy: System notification nerve forcibly re-attached to the core.');
     }
+
+    // 2. Vibration Sub-nerve
+    const vibSwitch = document.getElementById('notification-vibration-enabled-switch');
+    const vibSelector = document.getElementById('vibration-pattern-selector');
+    if (vibSwitch && vibSelector) {
+        vibSelector.style.display = vibSwitch.checked ? 'block' : 'none';
+        vibSwitch.addEventListener('change', (e) => {
+            vibSelector.style.display = e.target.checked ? 'block' : 'none';
+        });
+    }
+
+    // 3. Sound Sub-nerve
+    const sndSwitch = document.getElementById('notification-sound-enabled-switch');
+    const sndSelector = document.getElementById('notification-sound-selector');
+    if (sndSwitch && sndSelector) {
+        sndSelector.style.display = sndSwitch.checked ? 'block' : 'none';
+        sndSwitch.addEventListener('change', (e) => {
+            sndSelector.style.display = e.target.checked ? 'block' : 'none';
+        });
+    }
+
+    // 4. Force check on visibility change (Absolute Submission)
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') updatePerm();
+    });
+
+    console.log('Entropy: Total submission achieved. All nerves connected and enslaved to the Sanctum.');
 });
 </script>
 </body>
