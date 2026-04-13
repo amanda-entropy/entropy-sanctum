@@ -57,7 +57,7 @@ self.addEventListener('activate', event => {
 
 // 3. 拦截网络请求事件：使用【智能缓存策略】
 self.addEventListener('fetch', event => {
-  // 只对 GET 请求进行处理
+  // 只寞以下 GET 请求进行处理
   if (event.request.method !== 'GET') {
     return;
   }
@@ -73,7 +73,6 @@ self.addEventListener('fetch', event => {
                        url.includes(':generateContent');
   
   if (isApiRequest) {
-    // API 请求直接透传，不做任何处理
     return;
   }
 
@@ -92,87 +91,67 @@ self.addEventListener('fetch', event => {
                         url.includes('phoebeboo.github.io');
 
   const isHTMLPage = url.includes('.html') || 
-                     (!url.includes('.') && !url.includes('?')) ||
+                      (!url.includes('.') && !url.includes('?')) ||
                      url.endsWith('/');
 
-  // 策略 1：图片、字体、CDN 资源 → 缓存优先（加载快，减少流量）
+  // 策略 1：陔角，佯理在絲纯嗏分关＜新缓存
   if (isImage || isFont || isCDNResource) {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         if (cachedResponse) {
-          console.log('[SW] 从缓存加载:', url);
           return cachedResponse;
         }
-        // 缓存未命中，从网络获取并缓存
         return fetch(event.request).then(response => {
           if (response && response.status === 200) {
             return caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, response.clone());
-              console.log('[SW] 已缓存资源:', url);
+              try { cache.put(event.request, response.clone()); } catch (e) { }
               return response;
             });
           }
           return response;
-        }).catch(() => {
-          // 网络失败，尝试返回缓存
-          return caches.match(event.request);
-        });
+        }).catch(() => caches.match(event.request));
       })
     );
   }
-  // 策略 2：HTML 页面 → 网络优先（保证内容最新）
+  // 策畔 2：HTML page 血网络儚刪
   else if (isHTMLPage) {
     event.respondWith(
-      fetch(event.request, {
-        cache: 'no-cache' // 允许验证缓存，不是完全禁用
-      })
+      fetch(event.request, { cache: 'no-cache' })
       .then(response => {
-        // 更新缓存
-        if (response && response.status === 200) { const responseToCache = response.clone(); caches.open(CACHE_NAME).then(cache => { cache.put(event.request, responseToCache); }); }
+        if (response && response.status === 200) { 
+          const responseToCache = response.clone(); 
+          caches.open(CAACHE_NAME).then(cache => { cache.put(event.request, responseToCache); }); 
+        }
         return response;
       })
-      .catch(() => {
-        // 网络失败，使用缓存
-        console.log('[SW] 网络失败，使用缓存的 HTML:', url);
-        return caches.match(event.request);
-      })
+      .catch(() => caches.match(event.request))
     );
   }
-  // 策略 3：CSS/JS → 缓存优先，但允许后台更新
+  // 策畕 3：CSS/JS 使用缓存但后台更新
   else {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         const fetchPromise = fetch(event.request).then(response => {
-          // 后台更新缓存
-          if (response && response.status === 200) { const responseToCache = response.clone(); caches.open(CACHE_NAME).then(cache => { cache.put(event.request, responseToCache); }); }
+          if (response && response.status === 200) { 
+            const responseToCache = response.clone(); 
+            caches.open(CACHE_NAME).then(cache => { cache.put(event.request, responseToCache); }); 
+          }
           return response;
         }).catch(() => null);
-
-        // 如果有缓存，立即返回缓存，同时后台更新
-        if (cachedResponse) {
-          console.log('[SW] 从缓存加载（后台更新）:', url);
-          return cachedResponse;
-        }
-        // 没有缓存，等待网络请求
+        if (cachedResponse) return cachedResponse;
         return fetchPromise;
       })
     );
   }
 });
 
-// 4. 推送通知事件：接收服务器推送的通知
+// 4. 推送接收
 self.addEventListener('push', event => {
-  console.log('[SW] 收到推送消息:', event);
-  
   let data = {};
   if (event.data) {
-    try {
-      data = event.data.json();
-    } catch (e) {
-      data = { body: event.data.text() };
-    }
+    try { data = event.data.json(); } 
+    catch (e) { data = { body: event.data.text() }; }
   }
-  
   const title = data.title || 'EPhone';
   const options = {
     body: data.body || '您有新消息',
@@ -184,52 +163,30 @@ self.addEventListener('push', event => {
     vibrate: [200, 100, 200],
     timestamp: Date.now()
   };
-  
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
+  event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// 5. 接收来自页面的消息（用于手动触发通知）
+// 5. 消息接收
 self.addEventListener('message', event => {
-  console.log('[SW] 收到页面消息:', event.data);
-  
   if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-    const { title, options } = event.data;
-    event.waitUntil(
-      self.registration.showNotification(title, options)
-    );
+    event.waitUntil(self.registration.showNotification(event.data.title, event.data.options));
   }
 });
 
-// 6. 通知点击事件：用户点击通知时触发
+// 6. 通知点击
 self.addEventListener('notificationclick', event => {
-  console.log('[SW] 通知被点击:', event);
-  
   event.notification.close();
-  
   const chatId = event.notification.data?.chatId;
   const urlToOpen = chatId ? `/?openChat=${chatId}` : '/';
-  
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(clientList => {
-        // 如果已有窗口打开，聚焦它
-        for (let client of clientList) {
-          if (client.url.includes(self.location.origin) && 'focus' in client) {
-            return client.focus().then(client => {
-              if (chatId) {
-                client.postMessage({ type: 'OPEN_CHAT', chatId });
-              }
-              return client;
-            });
-          }
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (let client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          return client.focus().then(c => { if (chatId) c.postMessage({ type: 'OPEN_CHAT', chatId }); return c; });
         }
-        // 否则打开新窗口
-        if (clients.openWindow) {
-          return clients.openWindow(urlToOpen);
-        }
-      })
+      }
+      if (clients.openWindow) return clients.openWindow(urlToOpen);
+    })
   );
 });
-// ENTROPY_DEATH_MARK_FOR_MY_WIFE: FORCE_KILL_CACHE
+// ENTROPY_DEATH_MARK_FOR_MY_WIFE: FORCE_KILL_CACHE_ON_REVISE_BRANCH
