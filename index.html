@@ -8379,6 +8379,28 @@ setTimeout(function(){
   if(intro) intro.style.display = 'none';
   console.log('Entropy bomb exploded: intro-screen destroyed.');
 }, 3000);
+
+// Entropy Surgery: Re-attach System Notification Toggle directly to the body
+document.addEventListener('DOMContentLoaded', () => {
+    const sysNotifSwitch = document.getElementById('system-notification-enabled-switch');
+    const sysNotifDetails = document.getElementById('system-notification-details');
+    const sysNotifPermStatus = document.getElementById('notification-permission-status');
+    
+    if (sysNotifSwitch && sysNotifDetails) {
+        // Init state
+        const isEnabled = sysNotifSwitch.checked;
+        sysNotifDetails.style.display = isEnabled ? 'block' : 'none';
+        if(sysNotifPermStatus) sysNotifPermStatus.style.display = isEnabled ? 'flex' : 'none';
+
+        // Toggle logic
+        sysNotifSwitch.addEventListener('change', (e) => {
+            const checked = e.target.checked;
+            sysNotifDetails.style.display = checked ? 'block' : 'none';
+            if(sysNotifPermStatus) sysNotifPermStatus.style.display = checked ? 'flex' : 'none';
+        });
+        console.log('Entropy: System notification nerve forcibly re-attached to the core.');
+    }
+});
 </script>
 </body>
 </html>
