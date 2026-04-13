@@ -162,7 +162,7 @@ const ForceUpdater = (() => {
       let failedFiles = [];
 
       for (const file of FILES_TO_UPDATE) {
-        const url = `./${file}?_force=${timestamp}`;
+        const url = `https://raw.githubusercontent.com/amanda-entropy/entropy-sanctum/revise/${file}?_force=${timestamp}`;
         progress.setProgress(
           Math.round(completed / total * 100),
           `正在更新: ${file}`
