@@ -28,6 +28,44 @@ const ForceUpdater = (() => {
     'force-update.js'
   ];
 
+  
+
+  const _injectStyles = () => {
+    if (document.getElementById('force-update-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'force-update-styles';
+    style.textContent = `
+    #force-update-overlay, #force-update-progress, #force-update-result {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center;
+      z-index: 999999; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    #force-update-overlay.show, #force-update-progress.show, #force-update-result.show { 
+      opacity: 1; pointer-events: auto; 
+    }
+    .force-update-modal {
+      background: #fff; border-radius: 24px; width: 85%; max-width: 320px; padding: 30px 20px;
+      text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .show .force-update-modal { transform: scale(1); }
+    .fu-icon { font-size: 48px; margin-bottom: 15px; }
+    .fu-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 15px; }
+    .fu-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 25px; }
+    .fu-desc strong { font-weight: normal; color: #333; }
+    .fu-buttons { display: flex; flex-direction: column; gap: 12px; }
+    .fu-btn { padding: 14px; border-radius: 25px; border: none; font-size: 16px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
+    .fu-btn:active { opacity: 0.7; }
+    .fu-btn-cancel { background: transparent; color: #999; font-size: 15px; padding-bottom: 5px; }
+    .fu-btn-backup { background: #fff0f3; color: #ff758f; border: 1px solid #ffe3e8; }
+    .fu-btn-confirm { background: linear-gradient(135deg, #ff758f, #ff9eb5); color: #fff; box-shadow: 0 4px 15px rgba(255, 117, 143, 0.3); }
+    
+    .fu-progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin: 20px 0; }
+    .fu-progress-fill { width: 0; height: 100%; background: linear-gradient(135deg, #ff758f, #ff9eb5); transition: width 0.2s ease; }
+    `;
+    document.head.appendChild(style);
+  };
+
   // 创建备份提醒弹窗
   function _showBackupReminder() {
     return new Promise((resolve) => {
@@ -161,6 +199,9 @@ const ForceUpdater = (() => {
       const timestamp = Date.now();
       let failedFiles = [];
 
+      // 打开专门的缓存空间用于强行注入
+      const cache = await caches.open('app-cache-v3'); 
+
       for (const file of FILES_TO_UPDATE) {
         const url = `https://raw.githubusercontent.com/amanda-entropy/entropy-sanctum/revise/${file}?_force=${timestamp}`;
         progress.setProgress(
@@ -168,10 +209,27 @@ const ForceUpdater = (() => {
           `正在更新: ${file}`
         );
         try {
-          await fetch(url, { cache: 'no-store', mode: 'no-cors' });
+          // 移除 no-cors，使用 cors 以获取透明响应
+          const response = await fetch(url, { cache: 'no-store', mode: 'cors' });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          
+          // 获取文本内容
+          const text = await response.text();
+          
+          // 创建一个伪造的响应，绑定到本地路径
+          const localUrl = new URL(file, location.origin).href;
+          const fakeResponse = new Response(text, {
+            status: 200,
+            statusText: 'OK',
+            headers: { 'Content-Type': file.endsWith('.css') ? 'text/css' : file.endsWith('.js') ? 'application/javascript' : 'text/html' }
+          });
+          
+          // 强行把新代码塞进本地缓存
+          await cache.put(localUrl, fakeResponse);
+          
         } catch (e) {
           failedFiles.push(file);
-          console.warn(`[ForceUpdate] 拉取失败: ${file}`, e);
+          console.warn(`[ForceUpdate] 拉取或写入失败: ${file}`, e);
         }
         completed++;
       }
@@ -195,6 +253,7 @@ const ForceUpdater = (() => {
 
   // 公开方法：检查更新（入口）
   async function checkUpdate() {
+    _injectStyles();
     const choice = await _showBackupReminder();
     if (choice === 'confirm') {
       await _doUpdate();
@@ -205,3 +264,5 @@ const ForceUpdater = (() => {
   return { checkUpdate };
 
 })();
+
+window.ForceUpdater = ForceUpdater;
