@@ -3835,8 +3835,8 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
                 if (isViewingThisChat) {
                   appendMessage(successMsg, chat);
                 } else {
-                  // 如果在后台，发送通知
-                  showNotification(chat.id, `${chat.name} 使用亲属卡消费了 ¥${price}`);
+                  // 如果在后台，不发送通知
+                  console.log(`[Entropy] 拦截了 ${chat.name} 消费 ¥${price} 的通知`);
                 }
 
                 // 5. (可选) 将购买记录写入角色的模拟淘宝历史，增加真实感
@@ -4033,13 +4033,13 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
                   newMessagesCount++;
                 }
 
-                if (newMessagesCount > 0) {
-                  if (state.activeChatId !== privateChat.id) {
-                    privateChat.unreadCount = (privateChat.unreadCount || 0) + newMessagesCount;
-                    showNotification(privateChat.id, `${privateChat.name} 发来了 ${newMessagesCount} 条新消息`);
+                  if (newMessagesCount > 0) {
+                    if (state.activeChatId !== privateChat.id) {
+                      privateChat.unreadCount = (privateChat.unreadCount || 0) + newMessagesCount;
+                      console.log(`[Entropy] 拦截了 ${privateChat.name} 的 ${newMessagesCount} 条新消息通知`);
+                    }
+                    await db.chats.put(privateChat);
                   }
-                  await db.chats.put(privateChat);
-                }
 
                 aiMessage = null;
 
@@ -4111,7 +4111,7 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
                   const member = targetGroupChat.members.find(m => m.originalName === senderOriginalName);
                   const senderDisplayName = member ? member.groupNickname : senderOriginalName;
 
-                  showNotification(targetGroupChat.id, `${senderDisplayName}: ${messagesToSend[0]}`);
+                  console.log(`[Entropy] 拦截了群聊 ${targetGroupChat.name} 的消息通知: ${senderDisplayName}`);
                 }
 
                 // 6. 保存对 *目标群聊* 的更改
@@ -4986,12 +4986,12 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
               phoneScreen.classList.remove('pat-animation');
               void phoneScreen.offsetWidth;
               phoneScreen.classList.add('pat-animation');
-              setTimeout(() => phoneScreen.classList.remove('pat-animation'), 500);
-              appendMessage(patMessage, chat);
-            } else {
-              showNotification(chatId, patText);
-            }
-            continue;
+                  setTimeout(() => phoneScreen.classList.remove('pat-animation'), 500);
+                  appendMessage(patMessage, chat);
+                } else {
+                  console.log(`[Entropy] 拦截了拍一拍通知: ${patText}`);
+                }
+                continue;
           case 'update_status':
             chat.status.text = msgData.status_text;
             chat.status.isBusy = msgData.is_busy || false;
@@ -6054,8 +6054,8 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
                 notificationText = String(aiMessage.content || '');
             }
             const finalNotifText = chat.isGroup ? `${aiMessage.senderName}: ${notificationText}` : notificationText;
-            showNotification(chatId, finalNotifText.substring(0, 40) + (finalNotifText.length > 40 ? '...' : ''));
-            notificationShown = true;
+console.log("攔截 showNotification:", chatId, finalNotifText.substring(0, 40) + (finalNotifText.length > 40 ? '...' : ''));
+notificationShown = true;
           } else if (isViewingThisChat && !notificationShown) {
             // 新增：如果在聊天页面且启用了"在聊天页面也发送通知"，则发送系统级通知
             let notificationText;
