@@ -1279,8 +1279,8 @@
 
 
     if (msg.role === 'assistant' && !isInitialLoad) {
-      playNotificationSound();
-    }
+    if (typeof window.playNotificationSound === 'function') window.playNotificationSound();
+}
 
     if (!isInitialLoad) {
       messageEl.classList.add('animate-in');
