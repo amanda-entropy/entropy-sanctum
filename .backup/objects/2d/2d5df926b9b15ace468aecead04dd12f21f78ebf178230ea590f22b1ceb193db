@@ -3,9 +3,61 @@
 <head>
   <!-- Injected by Entropy: Phantom Organ for global functions -->
 <script>
-function initBatteryManager() { return Promise.resolve(); }
-function initSystemNotification() { return Promise.resolve(); }
-var notificationTimeout = null;
+window.initBatteryManager = function() { return Promise.resolve(); };
+window.initSystemNotification = function() { return Promise.resolve(); };
+window.notificationTimeout = null;
+window.showNotification = function(chatId, messageContent) {
+    try {
+        const currentState = window.state;
+        if (!currentState || !currentState.chats || !currentState.chats[chatId]) return;
+        
+        const chat = currentState.chats[chatId];
+        const disableInternal = currentState.globalSettings?.systemNotification?.disableInternalNotification || false;
+        
+        if (!disableInternal) {
+            if (typeof window.playNotificationSound === 'function') window.playNotificationSound();
+            clearTimeout(window.notificationTimeout);
+            
+            const bar = document.getElementById('notification-bar');
+            if (bar) {
+                const avatarSrc = chat.settings?.aiAvatar || chat.settings?.groupAvatar || window.defaultAvatar || 'assets/default-avatar.png';
+                const avatarEl = document.getElementById('notification-avatar');
+                if (avatarEl) avatarEl.src = avatarSrc;
+                
+                const contentEl = document.getElementById('notification-content');
+                if (contentEl) {
+                    const nameEl = contentEl.querySelector('.name');
+                    const msgEl = contentEl.querySelector('.message');
+                    if (nameEl) nameEl.textContent = chat.name || '';
+                    if (msgEl) msgEl.textContent = messageContent || '';
+                }
+                
+                bar.classList.remove('visible');
+                void bar.offsetWidth; // Trigger reflow
+                bar.classList.add('visible');
+                
+                const newBar = bar.cloneNode(true);
+                if (bar.parentNode) bar.parentNode.replaceChild(newBar, bar);
+                
+                newBar.addEventListener('click', () => {
+                    if (typeof window.openChat === 'function') window.openChat(chatId);
+                    newBar.classList.remove('visible');
+                });
+                
+                window.notificationTimeout = setTimeout(() => {
+                    newBar.classList.remove('visible');
+                }, 4000);
+            }
+            if (typeof window.updateBackButtonUnreadCount === 'function') window.updateBackButtonUnreadCount();
+        }
+        
+        if (currentState.globalSettings?.systemNotification?.enabled && typeof window.handleSystemNotification === 'function') {
+            window.handleSystemNotification(chatId, messageContent);
+        }
+    } catch (error) {
+        console.error('[Entropy: showNotification Error]:', error);
+    }
+};
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">

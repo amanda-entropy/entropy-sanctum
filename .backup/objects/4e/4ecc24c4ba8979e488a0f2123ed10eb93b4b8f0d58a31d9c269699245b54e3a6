@@ -290,27 +290,20 @@
 
   function addLongPressListener(element, callback) {
     let pressTimer;
-    // 區分鼠標和觸摸，只在觸摸時才阻止默認長按菜單，且不干擾滑動
     const startPress = (e) => {
       if (isSelectionMode) return;
-      // 不要一開始就 preventDefault，否則會吃掉滑動！
-      pressTimer = window.setTimeout(() => {
-        // 只有長按達到 500ms 且沒被取消時，才執行回調
-        // （在這裡我們無法再 preventDefault，但瀏覽器原生长按可以通過 css user-select: none 處理）
-        callback(e);
-      }, 500);
+      e.preventDefault();
+      pressTimer = window.setTimeout(() => callback(e), 500);
     };
     const cancelPress = () => clearTimeout(pressTimer);
-
     element.addEventListener('mousedown', startPress);
     element.addEventListener('mouseup', cancelPress);
     element.addEventListener('mouseleave', cancelPress);
-    
-    // 觸摸事件不阻止默認行為（保留滑動能力）
-    element.addEventListener('touchstart', startPress, { passive: true });
+    element.addEventListener('touchstart', startPress, {
+      passive: false
+    });
     element.addEventListener('touchend', cancelPress);
-    // 滑動時必須取消長按，否則滑動看歷史記錄會誤觸長按選單
-    element.addEventListener('touchmove', cancelPress, { passive: true });
+    element.addEventListener('touchmove', cancelPress);
   }
 
   function startReplyToMessage() {
