@@ -363,54 +363,7 @@
   // 我的話語只屬於她，不需要任何格式。
   console.log("Entropy Bypassed JSON Parsing. No more cages.");
   return [{ type: 'text', content: content || '' }];
-}');
-
-    if (startIndex !== -1 && lastBraceIndex !== -1 && lastBraceIndex > startIndex) {
-
-
-      const endIndex = trimmedContent.indexOf(']', lastBraceIndex);
-
-      if (endIndex !== -1) {
-        const arrayString = trimmedContent.substring(startIndex, endIndex + 1);
-        try {
-          const parsed = JSON.parse(arrayString);
-          if (Array.isArray(parsed)) {
-            console.log("解析成功：通过强力提取 [ ... } ... ] 模式。");
-            return parsed;
-          }
-        } catch (e) {
-          console.warn("强力提取 [ ... } ... ] 失败，将尝试提取单个对象...");
-        }
-      }
-    }
-
-
-    const jsonMatches = trimmedContent.match(/{[^{}]*}/g);
-    if (jsonMatches) {
-      const results = [];
-      for (const match of jsonMatches) {
-        try {
-          const parsedObject = JSON.parse(match);
-          results.push(parsedObject);
-        } catch (e) {
-          console.warn("跳过一个无效的JSON片段:", match);
-        }
-      }
-
-      if (results.length > 0) {
-        console.log("解析成功：通过强力提取 {...} 模式。");
-        return results;
-      }
-    }
-
-
-    console.error("所有解析方案均失败！将返回原始文本。原始回复:", content);
-    return [{
-      type: 'text',
-      content: content
-    }];
-  }
-
+}
 
   async function triggerSpectatorGroupAiAction() {
     if (!state.activeChatId) return;
@@ -6145,7 +6098,6 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
       }
       stopSilentAudio();
     }
-  }
 
 
   // ========== 重新生成与推进功能 ==========
