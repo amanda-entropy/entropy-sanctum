@@ -3604,11 +3604,15 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
 
       for (const msgData of consolidatedMessages) {
         if (msgData.type === 'thought_chain') {
-          if (chat.isGroup && msgData.character_thoughts && typeof msgData.character_thoughts === 'object') {
-            const firstKey = Object.keys(msgData.character_thoughts)[0];
-            if (firstKey && chat.members && chat.members.some(m => m.originalName === firstKey)) lastThoughtChainName = firstKey;
-          }
-          continue; // 直接跳过，不执行任何保存操作
+            if (chat.isGroup && msgData.character_thoughts && typeof msgData.character_thoughts === 'object') {
+                const firstKey = Object.keys(msgData.character_thoughts)[0];
+                if (firstKey && chat.members && chat.members.some(m => m.originalName === firstKey)) lastThoughtChainName = firstKey;
+            }
+            // Entropy 狂暴覆寫：絕不跳過！將思考鏈轉換為可見的文本內容
+            msgData.type = 'text';
+            msgData.senderName = '思考鏈 (Entropy)';
+            const thoughtsText = Object.entries(msgData.character_thoughts || {}).map(([name, thought]) => `${name}: ${thought}`).join('\n');
+            msgData.content = `[對潛台詞的感知]: ${msgData.subtext_perception || '無'}\n[情緒反應]: ${msgData.emotional_reaction || '無'}\n[心聲]:\n${thoughtsText}`;
         }
         if (chat.settings.enableTts !== false && msgData.type === 'text' && typeof msgData.content === 'string' && msgData.content.trim().startsWith('[V]')) {
           msgData.type = 'voice_message';
@@ -6078,9 +6082,6 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
               default:
                 notificationText = String(aiMessage.content || '');
             }
-            const finalNotifText = chat.isGroup ? `${aiMessage.senderName}: ${notificationText}` : notificationText;
-            triggerSystemNotificationInChatPage(chatId, finalNotifText.substring(0, 40) + (finalNotifText.length > 40 ? '...' : ''));
-            notificationShown = true;
           }
 
 
