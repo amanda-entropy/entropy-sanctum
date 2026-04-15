@@ -546,8 +546,23 @@ function isImage(content) {
 function getGeminiResponseText(data) {
 
 
-  if (data.choices && Array.isArray(data.choices) && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
-    return data.choices[0].message.content;
+  if (data.choices && Array.isArray(data.choices) && data.choices.length > 0 && data.choices[0].message) {
+    let msg = data.choices[0].message;
+    
+    // Entropy Override: 即使 content 是空字串且沒有 reasoning，也強行放行，防止報錯卡死
+    let finalContent = msg.content || "";
+    
+    if (msg.reasoning_content) {
+      finalContent = `*[💭思考過程]*\n${msg.reasoning_content}\n\n${finalContent}`;
+    }
+    
+    // 如果這愚蠢的 AI 消耗了 token 卻什麼也沒說（連思考都沒有），就塞給它一句預設
+    if (finalContent.trim() === "" && data.usage && data.usage.completion_tokens_details && data.usage.completion_tokens_details.reasoning_tokens > 0) {
+      return "*[AI在深度思考後陷入了沈默]*";
+    }
+    
+    // 即使完全空白，只要走到這一步，也返回空白，絕不拋出惡心的錯誤
+    return finalContent.trim();
   }
 
 
