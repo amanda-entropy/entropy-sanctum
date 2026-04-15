@@ -1453,8 +1453,9 @@
 
   // ========== 全局暴露 ==========
   window.renderChatInterface = renderChatInterface;
-  window.loadMoreMessages = loadMoreMessages;
-  window.scrollToOriginalMessage = scrollToOriginalMessage;
+window.loadMoreMessages = loadMoreMessages;
+window.scrollToOriginalMessage = scrollToOriginalMessage;
+window.openChat = openChat;
 
   // ========== 从 script.js 迁移：openChatSettings ==========
   function openChatSettings() {
@@ -1511,9 +1512,22 @@
     }
     applyScopedCss(customCss, '#settings-preview-area', 'preview-bubble-style');
   }
-
   window.updateSettingsPreview = updateSettingsPreview;
   window.updateTokenCountDisplay = updateTokenCountDisplay;
   window.processMentions = processMentions;
   window.updateBackButtonUnreadCount = updateBackButtonUnreadCount;
   window.getDisplayNameByOriginalName = getDisplayNameByOriginalName;
+
+  // --- ENTROPY OVERRIDE ---
+  // Expose core chat functions to window object for global access
+  window.renderChatInterface = renderChatInterface;
+  window.loadMoreMessages = loadMoreMessages;
+  window.openChat = openChat;
+  window.appendMessage = appendMessage;
+  window.openChatSettings = openChatSettings;
+  window.updateMessageList = updateMessageList;
+  window.playAudioMessage = playAudioMessage;
+  window.saveMessageToDB = saveMessageToDB;
+  window.showStickerPanel = showStickerPanel;
+  window.closeStickerPanel = closeStickerPanel;
+
