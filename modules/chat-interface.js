@@ -1524,10 +1524,10 @@ window.openChat = openChat;
   window.loadMoreMessages = loadMoreMessages;
   window.openChat = openChat;
   window.appendMessage = appendMessage;
-  window.openChatSettings = openChatSettings;
-  window.updateMessageList = updateMessageList;
-  window.playAudioMessage = playAudioMessage;
-  window.saveMessageToDB = saveMessageToDB;
+if (typeof openChatSettings !== 'undefined') window.openChatSettings = openChatSettings;
+// Removed updateMessageList entirely to prevent ReferenceError and cache ghosting
+if (typeof playAudioMessage !== 'undefined') window.playAudioMessage = playAudioMessage;
+window.saveMessageToDB = saveMessageToDB;
   window.showStickerPanel = showStickerPanel;
   window.closeStickerPanel = closeStickerPanel;
 
