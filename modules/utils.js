@@ -679,7 +679,7 @@ const defaultGroupMemberAvatar = 'https://i.postimg.cc/VkQfgzGJ/1.jpg';
 const defaultGroupAvatar = 'https://i.postimg.cc/gc3QYCDy/1-NINE7-Five.jpg';
 const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/notification-sound-2.mp3';
 
-let notificationTimeout;
+// notificationTimeout 已在 index.html 中被 var 声明
 let simulationIntervalId = null;
 let currentReplyContext = null;
 let activePostId = null;
