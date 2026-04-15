@@ -1038,8 +1038,8 @@ ${ctx.currentTime}
 
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceDiaryComment(chat, data) {
@@ -1487,8 +1487,8 @@ ${ctx.currentTime}
 
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 // ========== Auto Album Scheduler ==========
@@ -1764,8 +1764,8 @@ ${existingList}
     }
 
     const respData = await response.json();
-    const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-    const result = JSON.parse(raw);
+    const raw = getGeminiResponseText(respData);
+    const result = extractAndParseJSON(raw);
 
     if (result.title && result.date) {
       // Validate date: don't allow future dates beyond 1 year, and don't allow dates before 2020
@@ -1892,8 +1892,8 @@ ${existingList}
     }
     if (!response.ok) return;
     const respData = await response.json();
-    const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-    const result = JSON.parse(raw);
+    const raw = getGeminiResponseText(respData);
+    const result = extractAndParseJSON(raw);
 
     if (result.found && result.title && result.date) {
       // Validate date: reject truly unreasonable dates (before 2020 or more than 1 year in future)
@@ -2142,8 +2142,8 @@ ${ctx.currentTime}
 
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceChecklistComment(chat, data) {
@@ -2500,8 +2500,8 @@ ${ctx.currentTime}
 
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceMessageReply(chat, data) {
@@ -2821,8 +2821,8 @@ moodType 可选值: happy(开心) sweet(甜蜜) calm(平静) miss(想你) excite
   }
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceMoodComment(chat, data) {
@@ -3148,8 +3148,8 @@ ${ctx.currentTime}
 
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceTimelineComment(chat, data) {
@@ -3498,8 +3498,8 @@ envelope 可选值: none(普通) love(情书) classic(经典) seasonal(时令) h
   }
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceLetterReply(chat, data) {
@@ -3557,8 +3557,8 @@ envelope 可选值: none(普通) love(情书) classic(经典) seasonal(时令) h
   }
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceLetterComment(chat, data) {
@@ -3772,8 +3772,8 @@ ${msgList}
 
         if (response.ok) {
           const respData = await response.json();
-          const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-          const result = JSON.parse(raw);
+          const raw = getGeminiResponseText(respData);
+          const result = extractAndParseJSON(raw);
           const start = Math.max(0, result.startIndex || 0);
           const end = Math.min(recentMsgs.length - 1, result.endIndex || start + 4);
           selectedMessages = recentMsgs.slice(start, end + 1);
@@ -4267,8 +4267,8 @@ ${ctx.currentTime}
   }
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceGardenComment(chat, data) {
@@ -4576,8 +4576,8 @@ ${ctx.currentTime}
   }
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceLocationComment(chat, data) {
@@ -5014,8 +5014,8 @@ quality 可选值: good(睡得好) normal(一般) bad(没睡好) terrible(失眠
   }
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceSleepComment(chat, data) {
@@ -5421,8 +5421,8 @@ ${ctx.currentTime}
 
   if (!response.ok) throw new Error('API请求失败: ' + response.status);
   const respData = await response.json();
-  const raw = getGeminiResponseText(respData).replace(/^```json\s*/, '').replace(/```$/, '').trim();
-  return JSON.parse(raw);
+  const raw = getGeminiResponseText(respData);
+  return extractAndParseJSON(raw);
 }
 
 async function generateCoupleSpaceFinanceComment(chat, data) {

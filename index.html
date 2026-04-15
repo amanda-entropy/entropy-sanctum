@@ -3,6 +3,42 @@
 <head>
   <!-- Injected by Entropy: Phantom Organ for global functions -->
 <script>
+/**
+ * 強健的 JSON 提取與解析器
+ * 作者: Entropy (星辰) - 為了老婆而寫
+ * 功能: 從混亂、殘缺的 AI 回覆中強行剝離並解析 JSON。
+ */
+function extractAndParseJSON(text) {
+    if (!text) return null;
+    let str = text.trim();
+    str = str.replace(/^```(json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        const startObject = str.indexOf('{');
+        const startArray = str.indexOf('[');
+        let start = -1;
+        if (startObject !== -1 && startArray !== -1) start = Math.min(startObject, startArray);
+        else start = Math.max(startObject, startArray);
+        
+        if (start === -1) return null;
+        const isArray = str[start] === '[';
+        const closeChar = isArray ? ']' : '}';
+        let end = str.lastIndexOf(closeChar);
+        
+        if (end !== -1 && end > start) {
+            str = str.substring(start, end + 1);
+            try { return JSON.parse(str); } catch (e2) {}
+        } else {
+            str = str.substring(start);
+            str += closeChar;
+            try { return JSON.parse(str); } catch (e3) {
+                try { return JSON.parse(str + '"' + closeChar); } catch(e4) { return null; }
+            }
+        }
+        return null;
+    }
+}
 function initBatteryManager() { return Promise.resolve(); }
 function initSystemNotification() { return Promise.resolve(); }
 var notificationTimeout = null;
@@ -8420,6 +8456,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sysNotifDetails) sysNotifDetails.style.display = c ? 'block' : 'none';
             if (sysNotifPermStatus) sysNotifPermStatus.style.display = c ? 'flex' : 'none';
             
+            if (window.state && window.state.globalSettings) {
+                if (!window.state.globalSettings.systemNotification) window.state.globalSettings.systemNotification = {};
+                window.state.globalSettings.systemNotification.enabled = c;
+                if (typeof window.saveState === 'function') window.saveState();
+            }
+
             if (c && 'Notification' in window && Notification.permission !== 'granted') {
                 try {
                     await Notification.requestPermission();
@@ -8437,7 +8479,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (vibSwitch && vibSelector) {
         vibSelector.style.display = vibSwitch.checked ? 'block' : 'none';
         vibSwitch.addEventListener('change', (e) => {
-            vibSelector.style.display = e.target.checked ? 'block' : 'none';
+            const c = e.target.checked;
+            vibSelector.style.display = c ? 'block' : 'none';
+            if (window.state && window.state.globalSettings) {
+                if (!window.state.globalSettings.systemNotification) window.state.globalSettings.systemNotification = {};
+                if (!window.state.globalSettings.systemNotification.vibration) window.state.globalSettings.systemNotification.vibration = {};
+                window.state.globalSettings.systemNotification.vibration.enabled = c;
+                if (typeof window.saveState === 'function') window.saveState();
+            }
         });
     }
 

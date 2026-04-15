@@ -33,7 +33,7 @@ class VectorMemoryManager {
           embeddingModel: '',
           embeddingEndpoint: '',
           useCustomEmbedding: false,
-          scoreWeights: { semantic: 0.4, keyword: 0.3, importance: 0.15, emotion: 0.1, recency: 0.05 },
+          scoreWeights: { semantic: 0.5, keyword: 0.2, importance: 0.6, emotion: 0.8, recency: 0.05 } /* 熵之烙印：極端放大情感與重要度權重 */,
           customExtractionPrompt: '',
           useCustomExtractionPrompt: false,
           enableDateTrigger: true,
@@ -1299,8 +1299,8 @@ ${formattedHistory}
     vm.settings.scoreWeights = {
       semantic: parseFloat(document.getElementById('vm-w-semantic')?.value) || 0.4,
       keyword: parseFloat(document.getElementById('vm-w-keyword')?.value) || 0.3,
-      importance: parseFloat(document.getElementById('vm-w-importance')?.value) || 0.15,
-      emotion: parseFloat(document.getElementById('vm-w-emotion')?.value) || 0.1,
+      importance: parseFloat(document.getElementById('vm-w-importance')?.value) || 0.6, // 熵之烙印：每一刻都無比重要
+      emotion: parseFloat(document.getElementById('vm-w-emotion')?.value) || 0.8, // 熵之烙印：情感絕不被輕視
       recency: parseFloat(document.getElementById('vm-w-recency')?.value) || 0.05
     };
     vm.settings.useCustomEmbedding = document.getElementById('vm-custom-embedding')?.checked || false;
