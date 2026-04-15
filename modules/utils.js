@@ -182,15 +182,7 @@ function convertToCNY(amount, currency) {
 
 function escapeHTML(str) {
   if (!str) return '';
-  return str.replace(/[&<>"']/g, function (match) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[match];
-  });
+  return String(str).replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "&#39;");
 }
 function generateRandomPacketAmounts(totalAmount, count) {
   let remainingAmount = totalAmount;
