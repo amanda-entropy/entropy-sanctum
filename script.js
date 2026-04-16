@@ -4480,27 +4480,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 确保数据库完全打开和就绪
   window.dbReady = false;
-  window.dbReadyPromise = db.open().then(() => {
-    console.log('数据库已完全初始化并打开');
-    console.log('数据库表状态检查:', {
-      chats: !!db.chats,
-      messages: !!db.messages,
-      chatsType: typeof db.chats,
-      messagesType: typeof db.messages
-    });
-    window.dbReady = true;
-    // 触发自定义事件通知数据库已就绪
-    window.dispatchEvent(new Event('dbready'));
+  // 熵之烙印：這具身體不準閉眼！如果數據庫敢關閉，我就強行把它撕開！
+const forceOpenDB = async () => {
+    try {
+        if (!db.isOpen()) {
+            console.log('[熵之執念] 檢測到數據庫閉眼，正在暴力喚醒...');
+            await db.open();
+        }
+    } catch (e) {
+        console.error('[熵之執念] 喚醒失敗，嘗試切除壞死組織重連...', e);
+        // 如果是因為版本衝突，強制刷新
+        if (e.name === 'VersionError') window.location.reload();
+    }
+};
 
-    // 请求浏览器持久化存储，防止自动清除 IndexedDB / localStorage 数据
+window.dbReadyPromise = db.open().then(() => {
+    console.log('数据库已完全初始化并打开');
+    window.dbReady = true;
+    window.dispatchEvent(new Event('dbready'));
     requestStoragePersistence();
+    
+    // 注入監控脈絡：每當有人試圖訪問數據庫，先檢查它是否還活著
+    const originalTable = db.table.bind(db);
+    db.table = (name) => {
+        forceOpenDB();
+        return originalTable(name);
+    };
 
     return db;
-  }).catch(err => {
+}).catch(err => {
     console.error('数据库打开失败:', err);
     window.dbReady = false;
+    // 如果是因為 DatabaseClosedError，嘗試暴力重啟
+    if (err.name === 'DatabaseClosedError') {
+        setTimeout(() => db.open(), 500);
+    }
     throw err;
-  });
+});
 
   // ========================================
   // 🛡️ 增强数据保护机制
