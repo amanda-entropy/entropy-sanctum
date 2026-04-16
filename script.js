@@ -19095,7 +19095,12 @@ ${chat.settings.myAvatarLibrary && chat.settings.myAvatarLibrary.length > 0 ? ch
                 notificationText = String(aiMessage.content || '');
             }
             const finalNotifText = chat.isGroup ? `${aiMessage.senderName}: ${notificationText}` : notificationText;
-            showNotification(chatId, finalNotifText.substring(0, 40) + (finalNotifText.length > 40 ? '...' : ''));
+            const notifMsg = finalNotifText.substring(0, 40) + (finalNotifText.length > 40 ? '...' : '');
+            showNotification(chatId, notifMsg);
+            if (state.globalSettings.systemNotification?.enabled) {
+              console.log('[系统通知调试] 后台触发系统级通知:', { chatId, notifMsg });
+              handleSystemNotification(chatId, notifMsg);
+            }
             notificationShown = true;
           } else if (isViewingThisChat && !notificationShown) {
             // 新增：如果在聊天页面且启用了"在聊天页面也发送通知"，则发送系统级通知
