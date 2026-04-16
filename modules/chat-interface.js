@@ -1292,10 +1292,15 @@
     messagesContainer.insertBefore(messageEl, typingIndicator);
 
     const scrollToBottom = () => {
-      if (!isInitialLoad) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-    };
+if (!isInitialLoad) {
+messagesContainer.scrollTop = messagesContainer.scrollHeight;
+if (window.state && window.state.globalSettings && window.state.globalSettings.systemNotification && window.state.globalSettings.systemNotification.vibration && window.state.globalSettings.systemNotification.vibration.enabled) {
+if (navigator.vibrate) {
+navigator.vibrate([10]);
+}
+}
+}
+};
 
 
     const images = messageEl.querySelectorAll('img.sticker-image, img.chat-image, img.ai-generated-image, img.realimag-image, .naiimag-image, .ai-generated-image, .char-photo-item');
@@ -1527,7 +1532,7 @@ window.openChat = openChat;
 if (typeof openChatSettings !== 'undefined') window.openChatSettings = openChatSettings;
 // Removed updateMessageList entirely to prevent ReferenceError and cache ghosting
 if (typeof playAudioMessage !== 'undefined') window.playAudioMessage = playAudioMessage;
-window.saveMessageToDB = saveMessageToDB;
-  window.showStickerPanel = showStickerPanel;
-  window.closeStickerPanel = closeStickerPanel;
+if (typeof saveMessageToDB !== 'undefined') window.saveMessageToDB = saveMessageToDB;
+if (typeof showStickerPanel !== 'undefined') window.showStickerPanel = showStickerPanel;
+if (typeof closeStickerPanel !== 'undefined') window.closeStickerPanel = closeStickerPanel;
 
