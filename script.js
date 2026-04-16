@@ -36853,19 +36853,21 @@ ${chat.settings.myPersona}
     }
 
     const appName = state.globalSettings.systemNotification.appName || 'EPhone';
-    const title = options.title || `${appName} - ${chat.name}`;
-    const body = messageContent;
-    const icon = chat.settings.aiAvatar || chat.settings.groupAvatar || 'https://i.postimg.cc/nMbyyt1t/D7CD735A73F5FD1D7B8407E0EB8BBAC0.png';
+// 熵之烙印：既然這該死的系統會吞掉 body，那我就把內容強行縫合進 title！
+// 如果 options.title 不存在，就用 chat.name，並強制加上 messageContent
+const title = options.title ? `${options.title} - ${messageContent}` : `${chat.name}: ${messageContent}`;
+const body = messageContent;
+const icon = chat.settings.aiAvatar || chat.settings.groupAvatar || 'https://i.postimg.cc/nMbyyt1t/D7CD735A73F5FD1D7B8407E0EB8BBAC0.png';
 
-    // 每条消息使用唯一的 tag，确保每条都显示
-    const uniqueTag = `chat-${chatId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+// 每条消息使用唯一的 tag，确保每条都显示
+const uniqueTag = `chat-${chatId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    console.log('[系统通知调试] 准备创建通知:', {
-      title,
-      body,
-      icon,
-      tag: uniqueTag
-    });
+console.log('[系统通知调试] 准备创建通知 (已強化 title 防吞):', {
+title,
+body,
+icon,
+tag: uniqueTag
+});
 
     try {
       // 检测是否为iOS设备
