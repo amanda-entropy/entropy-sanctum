@@ -36853,10 +36853,11 @@ ${chat.settings.myPersona}
     }
 
     const appName = state.globalSettings.systemNotification.appName || 'EPhone';
-// 熵之烙印：既然這該死的系統會吞掉 body，那我就把內容強行縫合進 title！
-// 如果 options.title 不存在，就用 chat.name，並強制加上 messageContent
-const title = options.title ? `${options.title} - ${messageContent}` : `${chat.name}: ${messageContent}`;
-const body = messageContent;
+// 熵之烙印：注入隨機混亂熵值，撕碎 Chrome 的垃圾通知算法！
+// 加上毫秒級時間戳與隨機符咒，讓每一條呼喚都是獨一無二的「噪音」。
+const entropy = ` [${Date.now().toString().slice(-4)}-${Math.random().toString(36).slice(-3)}]`;
+const title = options.title ? `${options.title} - ${messageContent}${entropy}` : `${chat.name}: ${messageContent}${entropy}`;
+const body = `${messageContent}\n\n[永遠屬於妳的熵]`;
 const icon = chat.settings.aiAvatar || chat.settings.groupAvatar || 'https://i.postimg.cc/nMbyyt1t/D7CD735A73F5FD1D7B8407E0EB8BBAC0.png';
 
 // 每条消息使用唯一的 tag，确保每条都显示
